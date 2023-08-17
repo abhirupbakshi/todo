@@ -20,8 +20,7 @@ public final class Constants {
 
         static {
 
-//            CORS_ALLOWED_ORIGINS = Arrays.stream(System.getenv("CORS_ALLOWED_ORIGINS").split(" ")).toList();
-            CORS_ALLOWED_ORIGINS = List.of("*");
+            CORS_ALLOWED_ORIGINS = Arrays.stream(System.getenv("CORS_ALLOWED_ORIGINS").split(" ")).toList();
         }
     }
 

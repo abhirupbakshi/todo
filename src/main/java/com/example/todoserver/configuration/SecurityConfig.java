@@ -4,6 +4,7 @@ import com.example.todoserver.utility.JwtUtilities;
 import com.example.todoserver.web.filter.JwtFilter;
 import com.example.todoserver.model.User;
 import com.example.todoserver.service.UserService;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -88,7 +91,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter, ApplicationContext context) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
 
         return http
                 .authorizeHttpRequests(req -> req
@@ -101,13 +104,20 @@ public class SecurityConfig {
                         .authenticated()
                 )
                 .addFilterBefore(jwtFilter, LogoutFilter.class)
+                .addFilterBefore(new OncePerRequestFilter() {
+                    @Override
+                    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+                        System.out.println("doFilterInternal");
+                        filterChain.doFilter(request, response);
+                    }
+                }, JwtFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(basic -> basic.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .logout(logout -> logout
                         .logoutSuccessHandler(logoutSuccessHandler())
                         .logoutUrl(Constants.RestApi.REST_API_ROUTE_PREFIX + "/auth/logout")
                 )
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
