@@ -4,12 +4,10 @@ import com.example.todoserver.utility.JwtUtilities;
 import com.example.todoserver.web.filter.JwtFilter;
 import com.example.todoserver.model.User;
 import com.example.todoserver.service.UserService;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -30,8 +28,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -41,9 +37,16 @@ public class SecurityConfig {
 
     private UserService userService;
 
+    EnvironmentValues environmentValues;
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setEnvironmentValues(EnvironmentValues environmentValues) {
+        this.environmentValues = environmentValues;
     }
 
     @Bean
@@ -66,7 +69,7 @@ public class SecurityConfig {
             @Override
             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-                Object attribute = request.getAttribute(Constants.Jwt.REQUEST_ATTRIBUTE_TOKEN_KEY);
+                Object attribute = request.getAttribute(ConstantValues.Jwt.REQUEST_ATTRIBUTE_TOKEN_KEY);
 
                 if (attribute instanceof Map.Entry entry && entry.getKey() instanceof String username && entry.getValue() instanceof String token) {
                     jwtUtilities.blackListJwt(username, token);
@@ -81,13 +84,18 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        Constants.RestApi.CORS_ALLOWED_ORIGINS.forEach(configuration::addAllowedOrigin);
-        Constants.RestApi.CORS_ALLOWED_METHODS.forEach(configuration::addAllowedMethod);
-        Constants.RestApi.CORS_ALLOWED_HEADERS.forEach(configuration::addAllowedHeader);
+        environmentValues.TODO_CORS_ALLOWED_ORIGINS.forEach(configuration::addAllowedOrigin);
+        environmentValues.TODO_CORS_ALLOWED_METHODS.forEach(configuration::addAllowedMethod);
+        environmentValues.TODO_CORS_ALLOWED_HEADERS.forEach(configuration::addAllowedHeader);
         configuration.setAllowCredentials(true);
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
+    }
+
+    @Bean
+    public HttpStatusEntryPoint unauthorizedEntryPoint() {
+        return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
     }
 
     @Bean
@@ -96,28 +104,21 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(
-                                Constants.RestApi.REST_API_ROUTE_PREFIX + "/users",
-                                Constants.RestApi.REST_API_ROUTE_PREFIX + "/auth/login"
+                                ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/users",
+                                ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/auth/login"
                         )
                         .permitAll()
                         .anyRequest()
                         .authenticated()
                 )
                 .addFilterBefore(jwtFilter, LogoutFilter.class)
-                .addFilterBefore(new OncePerRequestFilter() {
-                    @Override
-                    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-                        System.out.println(request.getRequestURL() + request.getMethod());
-                        filterChain.doFilter(request, response);
-                    }
-                }, JwtFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(basic -> basic.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .httpBasic(basic -> basic.authenticationEntryPoint(unauthorizedEntryPoint()))
                 .logout(logout -> logout
                         .logoutSuccessHandler(logoutSuccessHandler())
-                        .logoutUrl(Constants.RestApi.REST_API_ROUTE_PREFIX + "/auth/logout")
+                        .logoutUrl(ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/auth/logout")
                 )
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

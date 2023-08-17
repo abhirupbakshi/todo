@@ -1,6 +1,6 @@
 package com.example.todoserver.web.controller;
 
-import com.example.todoserver.configuration.Constants;
+import com.example.todoserver.configuration.ConstantValues;
 import com.example.todoserver.model.User;
 import com.example.todoserver.service.UserService;
 import com.example.todoserver.utility.JwtUtilities;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(Constants.RestApi.REST_API_ROUTE_PREFIX + "/auth")
+@RequestMapping(ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/auth")
 public class AuthController {
 
     private UserService userService;
@@ -44,7 +44,7 @@ public class AuthController {
         String jwt = jwtUtilities.createJwt(userDetails);
         HttpHeaders headers = new HttpHeaders();
 
-        headers.add(HttpHeaders.AUTHORIZATION, Constants.Jwt.BEARER_TOKEN_PREFIX + " " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, ConstantValues.Jwt.BEARER_TOKEN_PREFIX + " " + jwt);
 
         return new ResponseEntity<>(user, headers, HttpStatus.OK);
     }

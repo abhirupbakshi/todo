@@ -1,6 +1,6 @@
 package com.example.todoserver.web.controller;
 
-import com.example.todoserver.configuration.Constants;
+import com.example.todoserver.configuration.ConstantValues;
 import com.example.todoserver.model.Todo;
 import com.example.todoserver.service.TodoService;
 import com.example.todoserver.utility.JsonUtilities;
@@ -19,7 +19,7 @@ import java.security.Principal;
 import java.util.*;
 
 @RestController
-@RequestMapping(Constants.RestApi.REST_API_ROUTE_PREFIX + "/todos")
+@RequestMapping(ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/todos")
 public class TodoController {
 
     private TodoService todoService;
@@ -50,8 +50,8 @@ public class TodoController {
                                                           @RequestParam(value = "order", required = false) List<String> order,
                                                           Principal principal) {
 
-        Assert.isTrue(page > 0, Constants.Todo.Error.INVALID_PAGE_NO);
-        Assert.isTrue(limit > 0, Constants.Todo.Error.INVALID_PAGE_LIMIT);
+        Assert.isTrue(page > 0, ConstantValues.Todo.Error.INVALID_PAGE_NO);
+        Assert.isTrue(limit > 0, ConstantValues.Todo.Error.INVALID_PAGE_LIMIT);
 
         List<Map.Entry<String, Sort.Direction>> orders = null;
 
@@ -59,7 +59,7 @@ public class TodoController {
                 (sort == null ^ order == null) ||
                 (sort != null && sort.size() != order.size())) {
 
-                throw new IllegalArgumentException(Constants.Todo.Error.INVALID_SORT_ORDER_PARAMETER);
+                throw new IllegalArgumentException(ConstantValues.Todo.Error.INVALID_SORT_ORDER_PARAMETER);
         }
         else if (sort != null) {
 
@@ -71,13 +71,13 @@ public class TodoController {
                         sort.get(i).isEmpty() || order.get(i).isEmpty() ||
                         (!order.get(i).equalsIgnoreCase("asc") && !order.get(i).equalsIgnoreCase("desc"))
                 ) {
-                    throw new IllegalArgumentException(Constants.Todo.Error.INVALID_SORT_ORDER_PARAMETER);
+                    throw new IllegalArgumentException(ConstantValues.Todo.Error.INVALID_SORT_ORDER_PARAMETER);
                 }
 
                 String _sort = jsonUtility.toClassFields(sort.get(i), Todo.class);
                 Sort.Direction _order = order.get(i).equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-                Assert.notNull(_sort, Constants.Todo.Error.INVALID_SORT_ORDER_PARAMETER);
+                Assert.notNull(_sort, ConstantValues.Todo.Error.INVALID_SORT_ORDER_PARAMETER);
 
                 orders.add(Map.entry(_sort, _order));
             }
@@ -86,7 +86,7 @@ public class TodoController {
         Page<Todo> todos = todoService.findTodosByUsername(principal.getName(), page, limit, orders);
         HttpHeaders headers = new HttpHeaders();
 
-        headers.set("X-Total-Count", String.valueOf(todos.getTotalElements()));
+        headers.set(ConstantValues.RestApi.PAGINATION_TOTAL_COUNT_HEADER, String.valueOf(todos.getTotalElements()));
 
         return new ResponseEntity<>(todos.getContent(), headers, HttpStatus.OK);
     }

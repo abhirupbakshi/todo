@@ -1,37 +1,25 @@
 package com.example.todoserver.configuration;
 
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.security.Key;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * A set of constants used throughout the application, like JWT keys, user roles, error messages, etc.
  * This class centralizes all the constants in one place. It also fetches environment variables values.
  */
-public class Constants {
+public final class ConstantValues {
 
-    public static abstract class RestApi {
-
+    public static final class RestApi {
         public static final String REST_API_ROUTE_PREFIX = "/api/v1";
-//        public static List<String> CORS_ALLOWED_METHODS = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH");
-//        public static List<String> CORS_ALLOWED_HEADERS = List.of("*");
+        public static final String PAGINATION_TOTAL_COUNT_HEADER = "X-Total-Count";
     }
 
-    public static abstract class Jwt {
+    public static final class Jwt {
         public static final String BEARER_TOKEN_PREFIX = "Bearer";
         public static final String REQUEST_ATTRIBUTE_TOKEN_KEY = "TOKEN";
-        public static abstract class Error {
+        public static final class Error {
             public static final String INVALID_TOKEN = "Token is invalid";
         }
     }
 
-    public static abstract class User {
-
-        public static final List<String> USER_ROLES = List.of(Arrays.stream(System.getenv("USER_ROLES").split(":")).toArray(String[]::new));
+    public static final class User {
         public static final int USERNAME_MIN_LENGTH = 5;
         public static final int USERNAME_MAX_LENGTH = 60;
         public static final int PASSWORD_MIN_LENGTH = 8;
@@ -41,9 +29,7 @@ public class Constants {
         public static final int FORENAME_MAX_LENGTH = 50;
         public static final int SURNAME_MIN_LENGTH = 2;
         public static final int SURNAME_MAX_LENGTH = 50;
-
-        public static abstract class Json {
-
+        public static final class Json {
             public static final String USERNAME = "username";
             public static final String PASSWORD = "password";
             public static final String EMAIL = "email";
@@ -51,9 +37,7 @@ public class Constants {
             public static final String FORENAME = "forename";
             public static final String SURNAME = "surname";
         }
-
-        public static abstract class Error {
-
+        public static final class Error {
             public static final String USERNAME_NEEDED = "Username is needed";
             public static final String PASSWORD_NEEDED = "Password is needed";
             public static final String EMAIL_NEEDED = "Email is needed";
@@ -70,28 +54,21 @@ public class Constants {
         }
     }
 
-    public static abstract class PasswordUpdateRequest {
-
-        public static abstract class Json {
-
+    public static final class PasswordUpdateRequest {
+        public static final class Json {
             public static final String CURRENT = "current";
             public static final String MODIFIED = "modified";
         }
-
-        public static abstract class Error {
-
+        public static final class Error {
             public static final String CURRENT_NEEDED = "Current user's password is needed";
             public static final String MODIFIED_NEEDED = "Modified user's password is needed";
         }
     }
 
-    public static abstract class Todo {
-
+    public static final class Todo {
         public static final int TITLE_MAX_LENGTH = 255;
         public static final int DESCRIPTION_MAX_LENGTH = 500;
-
-        public static abstract class Json {
-
+        public static final class Json {
             public static final String ID = "id";
             public static final String TITLE = "title";
             public static final String CREATED_AT = "created_at";
@@ -101,9 +78,7 @@ public class Constants {
             public static final String DESCRIPTION = "description";
             public static final String USER = "user";
         }
-
-        public static abstract class Error {
-
+        public static final class Error {
             public static final String INVALID_PAGE_NO = "Page number must be greater than 0";
             public static final String INVALID_PAGE_LIMIT = "Limit must be greater than 0";
             public static final String INVALID_SORT_ORDER_PARAMETER = "Invalid sort or order parameters";

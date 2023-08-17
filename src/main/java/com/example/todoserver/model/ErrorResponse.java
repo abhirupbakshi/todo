@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ErrorResponseModel {
+public class ErrorResponse {
 
     @JsonProperty(value = "messages")
     private List<String> messages;

@@ -1,6 +1,6 @@
 package com.example.todoserver.web.controller;
 
-import com.example.todoserver.configuration.Constants;
+import com.example.todoserver.configuration.ConstantValues;
 import com.example.todoserver.model.PasswordUpdateRequest;
 import com.example.todoserver.model.User;
 import com.example.todoserver.service.UserService;
@@ -17,7 +17,7 @@ import java.security.Principal;
 import java.util.Map;
 
 @RestController
-@RequestMapping(Constants.RestApi.REST_API_ROUTE_PREFIX + "/users")
+@RequestMapping(ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/users")
 public class UserController {
 
     private UserService userService;
@@ -77,7 +77,7 @@ public class UserController {
     public ResponseEntity<User> deleteUser(HttpServletRequest request, Principal principal) {
 
         User deleted = userService.deleteUser(principal.getName());
-        Object attribute = request.getAttribute(Constants.Jwt.REQUEST_ATTRIBUTE_TOKEN_KEY);
+        Object attribute = request.getAttribute(ConstantValues.Jwt.REQUEST_ATTRIBUTE_TOKEN_KEY);
 
         if (attribute instanceof Map.Entry entry && entry.getKey() instanceof String username && entry.getValue() instanceof String token) {
             jwtUtilities.blackListJwt(username, token);

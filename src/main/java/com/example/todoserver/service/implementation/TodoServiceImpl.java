@@ -1,6 +1,6 @@
 package com.example.todoserver.service.implementation;
 
-import com.example.todoserver.configuration.Constants;
+import com.example.todoserver.configuration.ConstantValues;
 import com.example.todoserver.exception.AlreadyExistException;
 import com.example.todoserver.exception.NotFoundException;
 import com.example.todoserver.model.Todo;
@@ -66,9 +66,9 @@ public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements T
         Optional<User> user = userRepository.findById(username);
 
         if (throwException != null && throwException && user.isPresent()) // Throw exception if present
-            throw new AlreadyExistException(Constants.User.Error.USER_EXISTS);
+            throw new AlreadyExistException(ConstantValues.User.Error.USER_EXISTS);
         else if (throwException != null && !throwException && user.isEmpty()) // Throw exception if not present
-            throw new NotFoundException(Constants.User.Error.USER_NOT_FOUND);
+            throw new NotFoundException(ConstantValues.User.Error.USER_NOT_FOUND);
 
         return user;
     }
@@ -89,12 +89,12 @@ public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements T
         Optional<Todo> todo = todoRepository.findById(todoId);
 
         if (throwException != null && throwException && todo.isPresent()) // Throw exception if present
-            throw new AlreadyExistException(Constants.Todo.Error.TODO_EXISTS);
+            throw new AlreadyExistException(ConstantValues.Todo.Error.TODO_EXISTS);
         else if (throwException != null && !throwException && todo.isEmpty()) // Throw exception if not present
-            throw new NotFoundException(Constants.Todo.Error.TODO_NOT_FOUND);
+            throw new NotFoundException(ConstantValues.Todo.Error.TODO_NOT_FOUND);
 
         if (matchUsername && todo.isPresent() && !todo.get().getUser().getUsername().equals(username))
-            throw new NotFoundException(Constants.Todo.Error.TODO_NOT_FOUND);
+            throw new NotFoundException(ConstantValues.Todo.Error.TODO_NOT_FOUND);
 
         return todo;
     }

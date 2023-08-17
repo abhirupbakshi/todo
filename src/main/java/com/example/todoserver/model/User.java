@@ -2,7 +2,7 @@ package com.example.todoserver.model;
 
 import com.example.todoserver.annotation.BatchUpdatable;
 import com.example.todoserver.annotation.NullOrNotBlank;
-import com.example.todoserver.configuration.Constants;
+import com.example.todoserver.configuration.ConstantValues;
 import com.example.todoserver.web.controller.validation.group.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,69 +23,69 @@ import java.util.List;
 @Accessors(chain = true)
 public class User {
 
-    @JsonProperty(value = Constants.User.Json.USERNAME)
-    @NotBlank(message = Constants.User.Error.USERNAME_NEEDED, groups = {UserValidationGroup.Create.class})
+    @JsonProperty(value = ConstantValues.User.Json.USERNAME)
+    @NotBlank(message = ConstantValues.User.Error.USERNAME_NEEDED, groups = {UserValidationGroup.Create.class})
     @Length(
-            min = Constants.User.USERNAME_MIN_LENGTH,
-            max = Constants.User.USERNAME_MAX_LENGTH,
-            message = Constants.User.Error.USERNAME_INVALID_LENGTH,
+            min = ConstantValues.User.USERNAME_MIN_LENGTH,
+            max = ConstantValues.User.USERNAME_MAX_LENGTH,
+            message = ConstantValues.User.Error.USERNAME_INVALID_LENGTH,
             groups = {UserValidationGroup.Create.class}
     )
     @Id
-    @Column(name = "username", length = Constants.User.USERNAME_MAX_LENGTH)
+    @Column(name = "username", length = ConstantValues.User.USERNAME_MAX_LENGTH)
     private String username;
 
-    @JsonProperty(value = Constants.User.Json.PASSWORD, access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank(message = Constants.User.Error.PASSWORD_NEEDED, groups = {UserValidationGroup.Create.class, UserValidationGroup.UpdatePassword.class})
+    @JsonProperty(value = ConstantValues.User.Json.PASSWORD, access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = ConstantValues.User.Error.PASSWORD_NEEDED, groups = {UserValidationGroup.Create.class, UserValidationGroup.UpdatePassword.class})
     @Length(
-            min = Constants.User.PASSWORD_MIN_LENGTH,
-            max = Constants.User.PASSWORD_MAX_LENGTH,
-            message = Constants.User.Error.PASSWORD_INVALID_LENGTH,
+            min = ConstantValues.User.PASSWORD_MIN_LENGTH,
+            max = ConstantValues.User.PASSWORD_MAX_LENGTH,
+            message = ConstantValues.User.Error.PASSWORD_INVALID_LENGTH,
             groups = {UserValidationGroup.Create.class, UserValidationGroup.UpdatePassword.class}
     )
     @Column(name = "password", length = 60, nullable = false) // Here the length of the password is determined by the Bcrypt hashed length
     private String password;
 
-    @JsonProperty(value = Constants.User.Json.EMAIL)
-    @NullOrNotBlank(message = Constants.User.Error.EMAIL_NEEDED, groups = {UserValidationGroup.Create.class})
-    @NotBlank(message = Constants.User.Error.EMAIL_NEEDED, groups = {UserValidationGroup.UpdateEmail.class})
-    @Email(message = Constants.User.Error.EMAIL_IS_INVALID, groups = {UserValidationGroup.Create.class, UserValidationGroup.UpdateEmail.class})
+    @JsonProperty(value = ConstantValues.User.Json.EMAIL)
+    @NullOrNotBlank(message = ConstantValues.User.Error.EMAIL_NEEDED, groups = {UserValidationGroup.Create.class})
+    @NotBlank(message = ConstantValues.User.Error.EMAIL_NEEDED, groups = {UserValidationGroup.UpdateEmail.class})
+    @Email(message = ConstantValues.User.Error.EMAIL_IS_INVALID, groups = {UserValidationGroup.Create.class, UserValidationGroup.UpdateEmail.class})
     @Length(
-            max = Constants.User.EMAIL_MAX_LENGTH,
-            message = Constants.User.Error.EMAIL_IS_INVALID,
+            max = ConstantValues.User.EMAIL_MAX_LENGTH,
+            message = ConstantValues.User.Error.EMAIL_IS_INVALID,
             groups = {UserValidationGroup.Create.class, UserValidationGroup.UpdateEmail.class}
     )
-    @Column(name = "email", length = Constants.User.EMAIL_MAX_LENGTH)
+    @Column(name = "email", length = ConstantValues.User.EMAIL_MAX_LENGTH)
     private String email;
 
-    @JsonProperty(value = Constants.User.Json.CREATED_AT, access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(value = ConstantValues.User.Json.CREATED_AT, access = JsonProperty.Access.READ_ONLY)
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @JsonProperty(value = Constants.User.Json.FORENAME)
-    @NotBlank(message = Constants.User.Error.FORENAME_NEEDED, groups = {UserValidationGroup.Create.class})
-    @NullOrNotBlank(message = Constants.User.Error.FORENAME_NEEDED, groups = {UserValidationGroup.Update.class})
+    @JsonProperty(value = ConstantValues.User.Json.FORENAME)
+    @NotBlank(message = ConstantValues.User.Error.FORENAME_NEEDED, groups = {UserValidationGroup.Create.class})
+    @NullOrNotBlank(message = ConstantValues.User.Error.FORENAME_NEEDED, groups = {UserValidationGroup.Update.class})
     @Length(
-            min = Constants.User.FORENAME_MIN_LENGTH,
-            max = Constants.User.FORENAME_MAX_LENGTH,
-            message = Constants.User.Error.FORENAME_IS_INVALID,
+            min = ConstantValues.User.FORENAME_MIN_LENGTH,
+            max = ConstantValues.User.FORENAME_MAX_LENGTH,
+            message = ConstantValues.User.Error.FORENAME_IS_INVALID,
             groups = {UserValidationGroup.Create.class, UserValidationGroup.Update.class}
     )
     @BatchUpdatable
-    @Column(name = "forename", length = Constants.User.FORENAME_MAX_LENGTH, nullable = false)
+    @Column(name = "forename", length = ConstantValues.User.FORENAME_MAX_LENGTH, nullable = false)
     private String forename;
 
-    @JsonProperty(value = Constants.User.Json.SURNAME)
-    @NotBlank(message = Constants.User.Error.SURNAME_NEEDED, groups = {UserValidationGroup.Create.class})
-    @NullOrNotBlank(message = Constants.User.Error.SURNAME_NEEDED, groups = {UserValidationGroup.Update.class})
+    @JsonProperty(value = ConstantValues.User.Json.SURNAME)
+    @NotBlank(message = ConstantValues.User.Error.SURNAME_NEEDED, groups = {UserValidationGroup.Create.class})
+    @NullOrNotBlank(message = ConstantValues.User.Error.SURNAME_NEEDED, groups = {UserValidationGroup.Update.class})
     @Length(
-            min = Constants.User.SURNAME_MIN_LENGTH,
-            max = Constants.User.SURNAME_MAX_LENGTH,
-            message = Constants.User.Error.SURNAME_IS_INVALID,
+            min = ConstantValues.User.SURNAME_MIN_LENGTH,
+            max = ConstantValues.User.SURNAME_MAX_LENGTH,
+            message = ConstantValues.User.Error.SURNAME_IS_INVALID,
             groups = {UserValidationGroup.Create.class, UserValidationGroup.Update.class}
     )
     @BatchUpdatable
-    @Column(name = "surname", length = Constants.User.SURNAME_MAX_LENGTH, nullable = false)
+    @Column(name = "surname", length = ConstantValues.User.SURNAME_MAX_LENGTH, nullable = false)
     private String surname;
 
     @JsonIgnore

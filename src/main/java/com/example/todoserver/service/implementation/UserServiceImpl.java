@@ -1,6 +1,7 @@
 package com.example.todoserver.service.implementation;
 
-import com.example.todoserver.configuration.Constants;
+import com.example.todoserver.configuration.ConstantValues;
+import com.example.todoserver.configuration.EnvironmentValues;
 import com.example.todoserver.exception.AlreadyExistException;
 import com.example.todoserver.exception.NotFoundException;
 import com.example.todoserver.model.User;
@@ -19,8 +20,14 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl extends AbstractModelServiceImpl<User> implements UserService {
 
+    private EnvironmentValues environmentValues;
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
+
+    @Autowired
+    public void setEnvironmentValues(EnvironmentValues environmentValues) {
+        this.environmentValues = environmentValues;
+    }
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
@@ -46,9 +53,9 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
         Optional<User> user = userRepository.findById(username);
 
         if (throwException != null && throwException && user.isPresent()) // Throw exception if present
-            throw new AlreadyExistException(Constants.User.Error.USER_EXISTS);
+            throw new AlreadyExistException(ConstantValues.User.Error.USER_EXISTS);
         else if (throwException != null && !throwException && user.isEmpty()) // Throw exception if not present
-            throw new NotFoundException(Constants.User.Error.USER_NOT_FOUND);
+            throw new NotFoundException(ConstantValues.User.Error.USER_NOT_FOUND);
 
         return user;
     }
@@ -65,7 +72,7 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
-        user.setRoles(Constants.User.USER_ROLES);
+        user.setRoles(environmentValues.TODO_USER_ROLES);
 
         return userRepository.save(user);
     }
@@ -75,7 +82,7 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
 
         User user = findUser(username, false).get();
 
-        Assert.isTrue(passwordEncoder.matches(currentPassword, user.getPassword()), Constants.User.Error.PASSWORD_MISMATCH);
+        Assert.isTrue(passwordEncoder.matches(currentPassword, user.getPassword()), ConstantValues.User.Error.PASSWORD_MISMATCH);
         user.setPassword(passwordEncoder.encode(newPassword));
 
         return userRepository.save(user);

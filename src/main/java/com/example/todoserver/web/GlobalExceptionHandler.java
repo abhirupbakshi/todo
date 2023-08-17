@@ -3,7 +3,7 @@ package com.example.todoserver.web;
 import com.example.todoserver.exception.AlreadyExistException;
 import com.example.todoserver.exception.NotFoundException;
 import com.example.todoserver.exception.ParseException;
-import com.example.todoserver.model.ErrorResponseModel;
+import com.example.todoserver.model.ErrorResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,9 +16,9 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponseModel> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
 
-        ErrorResponseModel error = new ErrorResponseModel();
+        ErrorResponse error = new ErrorResponse();
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -34,10 +34,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseModel> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 
         List<String> body = ex.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
-        ErrorResponseModel error = new ErrorResponseModel().setMessages(body);
+        ErrorResponse error = new ErrorResponse().setMessages(body);
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -46,9 +46,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseModel> handleIllegalArgumentException(IllegalArgumentException ex) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
 
-        ErrorResponseModel error = new ErrorResponseModel().setMessages(List.of(ex.getMessage()));
+        ErrorResponse error = new ErrorResponse().setMessages(List.of(ex.getMessage()));
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -57,9 +57,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AlreadyExistException.class)
-    public ResponseEntity<ErrorResponseModel> handleAlreadyExistException(AlreadyExistException ex) {
+    public ResponseEntity<ErrorResponse> handleAlreadyExistException(AlreadyExistException ex) {
 
-        ErrorResponseModel error = new ErrorResponseModel().setMessages(List.of(ex.getMessage()));
+        ErrorResponse error = new ErrorResponse().setMessages(List.of(ex.getMessage()));
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -68,9 +68,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponseModel> handleNotFoundException(NotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
 
-        ErrorResponseModel error = new ErrorResponseModel().setMessages(List.of(ex.getMessage()));
+        ErrorResponse error = new ErrorResponse().setMessages(List.of(ex.getMessage()));
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -79,9 +79,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseModel> handleException(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
 
-        ErrorResponseModel error = new ErrorResponseModel().setMessages(List.of());
+        ErrorResponse error = new ErrorResponse().setMessages(List.of());
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
