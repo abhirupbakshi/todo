@@ -1,6 +1,9 @@
 package com.example.todoserver.configuration;
 
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Arrays;
 import java.util.List;
@@ -9,30 +12,19 @@ import java.util.List;
  * A set of constants used throughout the application, like JWT keys, user roles, error messages, etc.
  * This class centralizes all the constants in one place. It also fetches environment variables values.
  */
-public final class Constants {
+public class Constants {
 
     public static abstract class RestApi {
 
         public static final String REST_API_ROUTE_PREFIX = "/api/v1";
-        public static final List<String> CORS_ALLOWED_ORIGINS;
-        public static final List<String> CORS_ALLOWED_METHODS = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH");
-        public static final List<String> CORS_ALLOWED_HEADERS = List.of("Authorization", "Content-Type", "X-Requested-With", "Accept");
-
-        static {
-
-            CORS_ALLOWED_ORIGINS = Arrays.stream(System.getenv("CORS_ALLOWED_ORIGINS").split(" ")).toList();
-        }
+//        public static List<String> CORS_ALLOWED_METHODS = List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH");
+//        public static List<String> CORS_ALLOWED_HEADERS = List.of("*");
     }
 
     public static abstract class Jwt {
-
-        public static final Key SIGNING_KEY = Keys.hmacShaKeyFor(System.getenv("JWT_SECRET").getBytes());
-        public static final long EXPIRATION_TIME_IN_SECONDS = Long.parseLong(System.getenv("JWT_EXPIRATION_TIME_IN_SECONDS"));
         public static final String BEARER_TOKEN_PREFIX = "Bearer";
         public static final String REQUEST_ATTRIBUTE_TOKEN_KEY = "TOKEN";
-
         public static abstract class Error {
-
             public static final String INVALID_TOKEN = "Token is invalid";
         }
     }
