@@ -44,6 +44,7 @@ public class UserController {
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@Validated(UserValidationGroup.Create.class) @RequestBody User user) {
 
+        System.out.println("In UserController.createUser()");
         User registered = userService.createUser(user);
 
         return new ResponseEntity<>(registered, HttpStatus.CREATED);
