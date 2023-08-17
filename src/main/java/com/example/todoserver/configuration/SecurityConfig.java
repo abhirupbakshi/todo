@@ -107,7 +107,7 @@ public class SecurityConfig {
                 .addFilterBefore(new OncePerRequestFilter() {
                     @Override
                     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-                        System.out.println("doFilterInternal");
+                        System.out.println(request.getRequestURL() + request.getMethod());
                         filterChain.doFilter(request, response);
                     }
                 }, JwtFilter.class)
