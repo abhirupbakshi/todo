@@ -49,7 +49,7 @@ public class UserController {
         return new ResponseEntity<>(registered, HttpStatus.CREATED);
     }
 
-    @PatchMapping(path = "/change-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updatePassword(@Validated(UserValidationGroup.UpdatePassword.class) @RequestBody PasswordUpdateRequest values, Principal principal) {
 
         User updated = userService.updatePassword(principal.getName(), values.getCurrent().getPassword(), values.getModified().getPassword());
@@ -57,7 +57,7 @@ public class UserController {
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/change-email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "/email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateEmail(@Validated(UserValidationGroup.UpdateEmail.class) @RequestBody User user, Principal principal) {
 
         User updated = userService.updateEmail(principal.getName(), user.getEmail());
