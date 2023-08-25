@@ -47,11 +47,14 @@ abstract class AbstractModelServiceImpl<T> {
                     String pascalCasedField = Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1);
                     logger.debug("Converted pascal cased field name: {}", pascalCasedField);
 
-                    Object returned = updated.getClass().getMethod("get" + pascalCasedField).invoke(updated);
-                    logger.debug("Value of the field {} is {}", field.getName(), returned);
+                    Object updatedValue = updated.getClass().getMethod("get" + pascalCasedField).invoke(updated);
+                    logger.debug("Value of the field {} in updated object is: {}", field.getName(), updatedValue);
 
-                    if (returned != null) {
-                        current.getClass().getMethod("set" + pascalCasedField, field.getType()).invoke(current, returned);
+                    Object currentValue = current.getClass().getMethod("get" + pascalCasedField).invoke(current);
+                    logger.debug("Value of the field {} in current object is: {}", field.getName(), currentValue);
+
+                    if (updatedValue != null && currentValue != null && !updatedValue.equals(currentValue)) {
+                        current.getClass().getMethod("set" + pascalCasedField, field.getType()).invoke(current, updatedValue);
                         logger.debug("Copied field {} value from updated object to current object", field.getName());
 
                         isUpdated = true;

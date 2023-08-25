@@ -3,7 +3,6 @@ package com.example.todo.web.controller;
 import com.example.todo.configuration.ConstantValues;
 import com.example.todo.model.Todo;
 import com.example.todo.service.validation.TodoValidator;
-import com.example.todo.service.validation.implementation.TodoValidatorImpl;
 import com.example.todo.service.TodoService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -32,8 +31,8 @@ public class TodoController {
     }
 
     @Autowired
-    public void setTodoValidator(TodoValidatorImpl todoValidatorImpl) {
-        this.todoValidator = todoValidatorImpl;
+    public void setTodoValidator(TodoValidator todoValidator) {
+        this.todoValidator = todoValidator;
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,10 +74,16 @@ public class TodoController {
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Todo> updateTodo(@PathVariable("id")  UUID id, @RequestBody Todo todo, Principal principal, HttpServletRequest request) {
 
-        todo = todoService.updateTodo(principal.getName(), id, todo);
-        logger.info("Updated todo with id: {}, username: {} at request url: {}", todo.getId(), principal.getName(), request.getRequestURL());
+        Map.Entry<Todo, Boolean> result = todoService.updateTodo(principal.getName(), id, todo);
 
-        return new ResponseEntity<>(todo, HttpStatus.OK);
+        if (result.getValue()) {
+            logger.info("Updated todo with id: {}, username: {} at request url: {}", result.getKey().getId(), principal.getName(), request.getRequestURL());
+            return new ResponseEntity<>(result.getKey(), HttpStatus.OK);
+        }
+        else {
+            logger.info("Nothing updated for todo with id: {}, username: {} at request url: {} as there is no change", result.getKey().getId(), principal.getName(), request.getRequestURL());
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -20,7 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class UserServiceImpl extends AbstractModelServiceImpl<User> implements UserService {
 
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstantValues.DATE_TIME_FORMAT_PATTERN);
     private EnvironmentValues environmentValues;
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
@@ -125,7 +128,7 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
 
         user
                 .setPassword(passwordEncoder.encode(user.getPassword()))
-                .setCreatedAt(LocalDateTime.now())
+                .setCreatedAt(LocalDateTime.parse(formatter.format(LocalDateTime.now())))
                 .setRoles(roles);
         logger.debug("User password (encoded), creation time: {} and roles: {} have been set", user.getCreatedAt(), user.getRoles());
 
@@ -136,7 +139,7 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
     }
 
     @Override
-    public User updatePassword(String username, PasswordUpdateRequest passwordUpdateRequest) {
+    public Map.Entry<User, Boolean> updatePassword(String username, PasswordUpdateRequest passwordUpdateRequest) {
 
         logger.debug("Parameters:: username: {}, passwordUpdateRequest: {}", username, passwordUpdateRequest);
 
@@ -154,17 +157,23 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
 
         logger.info("All validations for user-password-update-operation passed for user with username: {}", user.getUsername());
 
-        user.setPassword(passwordEncoder.encode(passwordUpdateRequest.getModified().getPassword()));
-        logger.debug("New user password has been set");
+        if (passwordEncoder.matches(passwordUpdateRequest.getModified().getPassword(), user.getPassword())) {
+            logger.info("User password for username: {} has not been updated in the database as the new password is the same", user.getUsername());
+            return Map.entry(user, false);
+        }
+        else {
+            user.setPassword(passwordEncoder.encode(passwordUpdateRequest.getModified().getPassword()));
+            logger.debug("New user password has been set");
 
-        user = userRepository.save(user);
-        logger.info("User with username: {} has been updated in the database", user.getUsername());
+            user = userRepository.save(user);
+            logger.info("User with username: {} has been updated in the database", user.getUsername());
 
-        return user;
+            return Map.entry(user, true);
+        }
     }
 
     @Override
-    public User updateEmail(String username, User user) {
+    public Map.Entry<User, Boolean> updateEmail(String username, User user) {
 
         logger.debug("Parameters:: username: {}, user: {}", username, user);
 
@@ -179,17 +188,23 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
 
         logger.info("All validations for user-email-update operation passed for user with username: {}", presentUser.getUsername());
 
-        presentUser.setEmail(user.getEmail());
-        logger.debug("Old email has been replaced with: {} for user with username: {}", presentUser.getEmail(), presentUser.getUsername());
+        if (presentUser.getEmail().equals(user.getEmail())) {
+            logger.info("Old email has not been replaced with: {} for user with username: {} as both emails are same", user.getEmail(), presentUser.getUsername());
+            return Map.entry(presentUser, false);
+        }
+        else {
+            presentUser.setEmail(user.getEmail());
+            logger.debug("Old email has been replaced with: {} for user with username: {}", presentUser.getEmail(), presentUser.getUsername());
 
-        presentUser = userRepository.save(presentUser);
-        logger.info("User with username: {} has been updated in the database", presentUser.getUsername());
+            presentUser = userRepository.save(presentUser);
+            logger.info("User with username: {} has been updated in the database", presentUser.getUsername());
 
-        return presentUser;
+            return Map.entry(presentUser, true);
+        }
     }
 
     @Override
-    public User updateUser(String username, User user) {
+    public Map.Entry<User, Boolean> updateUser(String username, User user) {
 
         logger.debug("Parameters:: username: {}, user: {}", username, user);
 
@@ -216,7 +231,7 @@ public class UserServiceImpl extends AbstractModelServiceImpl<User> implements U
         else
             logger.info("No user details has been updated as there is nothing to update");
 
-        return oldUser;
+        return Map.entry(oldUser, isUpdated);
     }
 
     @Override

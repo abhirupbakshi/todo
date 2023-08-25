@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
  */
 public final class ConstantValues {
 
+    public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+
     public static final class RestApi {
         public static final String REST_API_ROUTE_PREFIX = "/v1";
         public static final String PAGINATION_TOTAL_COUNT_HEADER = "X-Total-Count";

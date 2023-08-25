@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping(ConstantValues.RestApi.REST_API_ROUTE_PREFIX + "/users")
@@ -54,28 +55,46 @@ public class UserController {
     @PatchMapping(path = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updatePassword(@RequestBody PasswordUpdateRequest passwordUpdateRequest, Principal principal, HttpServletRequest request) {
 
-        User user = userService.updatePassword(principal.getName(), passwordUpdateRequest);
-        logger.info("User password updated with username: {} at request url: {}", user.getUsername(), request.getRequestURL());
+        Map.Entry<User, Boolean> result = userService.updatePassword(principal.getName(), passwordUpdateRequest);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        if (result.getValue()) {
+            logger.info("User password updated with username: {} at request url: {}", result.getKey().getUsername(), request.getRequestURL());
+            return new ResponseEntity<>(result.getKey(), HttpStatus.OK);
+        }
+        else {
+            logger.info("User not updated with username: {} at request url: {} as there is no change", result.getKey().getUsername(), request.getRequestURL());
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @PatchMapping(path = "/email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateEmail(@RequestBody User user, Principal principal, HttpServletRequest request) {
 
-        user = userService.updateEmail(principal.getName(), user);
-        logger.info("User email updated with username: {} at request url: {}", user.getUsername(), request.getRequestURL());
+        Map.Entry<User, Boolean> result = userService.updateEmail(principal.getName(), user);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        if (result.getValue()) {
+            logger.info("User email updated with username: {} at request url: {}", result.getKey().getUsername(), request.getRequestURL());
+            return new ResponseEntity<>(result.getKey(), HttpStatus.OK);
+        }
+        else {
+            logger.info("User not updated with username: {} at request url: {} as there is no change", result.getKey().getUsername(), request.getRequestURL());
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@RequestBody User user, Principal principal, HttpServletRequest request) {
 
-        user = userService.updateUser(principal.getName(), user);
-        logger.info("User updated with username: {} at request url: {}", user.getUsername(), request.getRequestURL());
+        Map.Entry<User, Boolean> result = userService.updateUser(principal.getName(), user);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        if (result.getValue()) {
+            logger.info("User updated with username: {} at request url: {}", result.getKey().getUsername(), request.getRequestURL());
+            return new ResponseEntity<>(result.getKey(), HttpStatus.OK);
+        }
+        else {
+            logger.info("User not updated with username: {} at request url: {} as there is no change", result.getKey().getUsername(), request.getRequestURL());
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -57,7 +57,7 @@ public interface TodoService {
      * @return The updated todo
      * @throws NotFoundException if the user or todo is not found or if the todo does not belong to the user
      */
-    Todo updateTodo(String username, UUID id, Todo todo);
+    Map.Entry<Todo, Boolean> updateTodo(String username, UUID id, Todo todo);
 
     /**
      * Deletes a {@link Todo} of a {@link User} from the database.

@@ -17,6 +17,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +30,7 @@ import java.util.UUID;
 public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements TodoService {
 
     private final Logger logger = LoggerFactory.getLogger(TodoServiceImpl.class);
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstantValues.DATE_TIME_FORMAT_PATTERN);
     private TodoRepository todoRepository;
     private UserRepository userRepository;
     private TodoValidator todoValidator;
@@ -194,8 +196,8 @@ public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements T
 
         todo
                 .setId(UUID.randomUUID())
-                .setCreatedAt(LocalDateTime.now())
-                .setUpdatedAt(LocalDateTime.now())
+                .setCreatedAt(LocalDateTime.parse(formatter.format(LocalDateTime.now())))
+                .setUpdatedAt(LocalDateTime.parse(formatter.format(LocalDateTime.now())))
                 .setUser(user);
         logger.debug("Todo id: {}, created at: {}, updated at: {}, user with username: {} has been set",
                 todo.getId(), todo.getCreatedAt(), todo.getUpdatedAt(), todo.getUser().getUsername());
@@ -207,7 +209,7 @@ public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements T
     }
 
     @Override
-    public Todo updateTodo(String username, UUID id, Todo todo) {
+    public Map.Entry<Todo, Boolean> updateTodo(String username, UUID id, Todo todo) {
 
         logger.debug("Parameters:: username: {}, id: {}, todo: {}", username, id, todo);
 
@@ -229,7 +231,7 @@ public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements T
         logger.debug("Executed batchUpdate method. Returned isUpdated: {}", isUpdated);
 
         if (isUpdated) {
-            databaseTodo.setUpdatedAt(LocalDateTime.now());
+            databaseTodo.setUpdatedAt(LocalDateTime.parse(formatter.format(LocalDateTime.now())));
             logger.debug("Updated Todo information has been set");
 
             databaseTodo = todoRepository.save(databaseTodo);
@@ -238,7 +240,7 @@ public class TodoServiceImpl extends AbstractModelServiceImpl<Todo> implements T
         else
             logger.info("No todo information has been updated as there is nothing to update");
 
-        return databaseTodo;
+        return Map.entry(databaseTodo, isUpdated);
     }
 
     @Override

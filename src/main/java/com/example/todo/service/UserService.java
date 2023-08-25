@@ -6,6 +6,8 @@ import com.example.todo.exception.AlreadyExistException;
 import com.example.todo.exception.NotFoundException;
 import com.example.todo.annotation.BatchUpdatable;
 
+import java.util.Map;
+
 /**
  * An interface containing all the {@link User} related service methods.
  */
@@ -36,7 +38,7 @@ public interface UserService {
      * @throws NotFoundException if the user is not found
      * @throws IllegalArgumentException if the passwords do not match
      */
-    User updatePassword(String username, PasswordUpdateRequest updateRequest);
+    Map.Entry<User, Boolean> updatePassword(String username, PasswordUpdateRequest updateRequest);
 
     /**
      * Updates the email of a {@link User}.
@@ -45,7 +47,7 @@ public interface UserService {
      * @return The updated user
      * @throws NotFoundException if the user is not found
      */
-    User updateEmail(String username, User user);
+    Map.Entry<User, Boolean> updateEmail(String username, User user);
 
     /**
      * Used for updating the fields of a {@link User} that has been annotated with {@link BatchUpdatable} annotation.
@@ -55,7 +57,7 @@ public interface UserService {
      * @return The updated user to be saved
      * @throws NotFoundException if the user is not found
      */
-    User updateUser(String username, User user);
+    Map.Entry<User, Boolean> updateUser(String username, User user);
 
     /**
      * Deletes a {@link User} from the database.

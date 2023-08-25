@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.UUID;
 
@@ -130,6 +131,7 @@ public class Todo {
     private static class ScheduledAtFieldDeserializer extends JsonDeserializer<LocalDateTime> {
 
         private final Logger logger = LoggerFactory.getLogger(ScheduledAtFieldDeserializer.class);
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ConstantValues.DATE_TIME_FORMAT_PATTERN);
 
         @Override
         public LocalDateTime deserialize(JsonParser p, DeserializationContext context) throws IOException, JacksonException {
@@ -147,6 +149,9 @@ public class Todo {
                 try {
                     LocalDateTime parsed = LocalDateTime.parse(value);
                     logger.debug("Parsed value: {}", parsed);
+
+                    parsed = LocalDateTime.parse(formatter.format(parsed));
+                    logger.debug("Formatted value: {}", parsed);
 
                     return parsed;
                 }
