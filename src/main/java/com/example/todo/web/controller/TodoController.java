@@ -2,6 +2,7 @@ package com.example.todo.web.controller;
 
 import com.example.todo.configuration.ConstantValues;
 import com.example.todo.model.Todo;
+import com.example.todo.service.validation.TodoValidator;
 import com.example.todo.service.validation.implementation.TodoValidatorImpl;
 import com.example.todo.service.TodoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class TodoController {
 
     private final Logger logger = LoggerFactory.getLogger(TodoController.class);
     private TodoService todoService;
-    private TodoValidatorImpl todoValidatorImpl;
+    private TodoValidator todoValidator;
 
     @Autowired
     public void setTodoService(TodoService todoService) {
@@ -32,7 +33,7 @@ public class TodoController {
 
     @Autowired
     public void setTodoValidator(TodoValidatorImpl todoValidatorImpl) {
-        this.todoValidatorImpl = todoValidatorImpl;
+        this.todoValidator = todoValidatorImpl;
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +52,7 @@ public class TodoController {
                                                           @RequestParam(value = "order", required = false) List<String> order,
                                                           Principal principal, HttpServletRequest request) {
 
-        Page<Todo> todos = todoService.findTodosByUsername(principal.getName(), page, limit, todoValidatorImpl.validateAndCreateSortOrders(sort, order));
+        Page<Todo> todos = todoService.findTodosByUsername(principal.getName(), page, limit, todoValidator.validateAndCreateSortOrders(sort, order));
         logger.info("Found {} todos for username: {} at request url: {} with page: {}, limit: {}, sort: {}, order: {}",
                 todos.getTotalElements(), principal.getName(), request.getRequestURL(), page, limit, sort, order);
 
