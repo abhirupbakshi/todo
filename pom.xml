@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>todo-server</artifactId>
+	<artifactId>todo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Todo Server</name>
+	<name>Todo App Server</name>
 	<description>A simple todo app server</description>
 	<properties>
 		<java.version>17</java.version>

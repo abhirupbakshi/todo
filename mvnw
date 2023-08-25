@@ -29,7 +29,7 @@
 # -----------------
 #   MAVEN_OPTS - parameters passed to the Java VM when running Maven
 #     e.g. to debug Maven itself, use
-#       set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,todoserver=y,suspend=y,address=8000
+#       set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,todo=y,suspend=y,address=8000
 #   MAVEN_SKIP_RC - flag to disable loading of mavenrc files
 # ----------------------------------------------------------------------------
 
