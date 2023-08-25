@@ -10,8 +10,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class TodoServer {
 
 	public static void main(String[] args) {
-		ConfigurableApplicationContext context = SpringApplication.run(TodoServer.class, args);
-		RoleRepository roleRepository = context.getBean(RoleRepository.class);
-		roleRepository.save(new Role().setName("USER"));
+		SpringApplication.run(TodoServer.class, args);
 	}
 }
