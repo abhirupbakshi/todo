@@ -3,7 +3,6 @@ package com.example.todo.web.controller;
 import com.example.todo.configuration.ConstantValues;
 import com.example.todo.model.Todo;
 import com.example.todo.service.validation.TodoValidator;
-import com.example.todo.service.validation.implementation.TodoValidatorImpl;
 import com.example.todo.service.TodoService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -32,8 +31,8 @@ public class TodoController {
     }
 
     @Autowired
-    public void setTodoValidator(TodoValidatorImpl todoValidatorImpl) {
-        this.todoValidator = todoValidatorImpl;
+    public void setTodoValidator(TodoValidator todoValidator) {
+        this.todoValidator = todoValidator;
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
